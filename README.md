@@ -1,6 +1,7 @@
 # meson test
 
-prepare 
+prepare
+
 ```shell
 # install deps
 yarn
