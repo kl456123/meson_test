@@ -6,11 +6,12 @@ import { getSwapId, getStatus, getSwapRequest } from "../src/meson_utils";
 import {
   encodeUniversalRouterCalldata,
   encodePath,
+  parseUniversalRouterCalldata,
 } from "../src/universal_router_helper";
 import {
   usdcAddress,
   wethAddress,
-  univesalRouterAddr,
+  universalRouterAddr,
   baseApiUrl,
   bridgeAggregatorInMultiChain,
 } from "../src/constants";
@@ -89,7 +90,7 @@ async function swapAndBridgeTest(bridgeAggregator: Contract) {
     protocolFee: 0,
     affiliateFee: 0,
     affiliator: ethers.ZeroAddress,
-    dexRouter: univesalRouterAddr,
+    dexRouter: universalRouterAddr,
     dexData,
   };
   const swapRequest = await getSwapRequest({
@@ -158,19 +159,20 @@ async function generateMessageDataAndSignature(
 
 async function swapOnToChainTest(bridgeAggregator: Contract, signer: Signer) {
   // make sure the adaptor contract is deployed already
-  // const fromTokenAmount = ethers.parseEther("0.005");
-  const fromTokenAmount = ethers.parseUnits("16", 6);
+  const gasFeeAmount = 0n;
   // weth=>usdc
-  // const tokenAmount = ethers.parseEther("0.005");
+  // const fromTokenAmount = ethers.parseEther("0.002");
   // const fromToken = wethAddress;
   // const toToken = usdcAddress;
-  // const amountOutMinimum = ethers.parseUnits("16", 6);
+  // // minimal token amount of usdc
+  // const amountOutMinimum = ethers.parseUnits("6", 6);
 
   // usdc => weth
-  const tokenAmount = ethers.parseUnits("16", 6);
+  const fromTokenAmount = ethers.parseUnits("16", 6);
   const fromToken = usdcAddress;
   const toToken = wethAddress;
   const amountOutMinimum = ethers.parseEther("0.004");
+  const totalTokenAmount = fromTokenAmount + gasFeeAmount;
 
   const dexData = encodeUniversalRouterCalldata(
     recipient,
@@ -184,7 +186,7 @@ async function swapOnToChainTest(bridgeAggregator: Contract, signer: Signer) {
     signer,
     recipient,
     wethAddress,
-    tokenAmount,
+    totalTokenAmount,
     await bridgeAggregator.getAddress(),
   );
   // note that use initiator provided by api to generate release signature
@@ -193,8 +195,8 @@ async function swapOnToChainTest(bridgeAggregator: Contract, signer: Signer) {
     toToken,
     receiver: recipient,
     fromTokenAmount,
-    gasFeeAmount: 0,
-    dexRouter: univesalRouterAddr,
+    gasFeeAmount,
+    dexRouter: universalRouterAddr,
     dexData,
     message,
   };

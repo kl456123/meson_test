@@ -4,7 +4,7 @@ export const baseApiUrlForTest = "https://testnet-relayer.meson.fi/api/v1";
 
 export const usdcAddress = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";
 export const wethAddress = "0x4200000000000000000000000000000000000006";
-export const univesalRouterAddr = "0x6Cb442acF35158D5eDa88fe602221b67B400Be3E";
+export const universalRouterAddr = "0x6Cb442acF35158D5eDa88fe602221b67B400Be3E";
 
 export const bridgeAggregatorInMultiChain: Record<string, string> = {
   base: "0xE9917DA54E9bC748fF915FDFf129a2610Fb2993F",

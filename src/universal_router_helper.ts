@@ -24,12 +24,13 @@ export function encodePath(tokens: string[], fees: string[]): string {
   if (tokens.length !== fees.length + 1)
     throw new Error(`tokens and fees are mismatched`);
   // let path = ethers.getBytes(tokens[0])
-  const path = [ethers.getBytes(tokens[0])];
+  const types = ["address"];
+  const values = [tokens[0]];
   for (let i = 0; i < fees.length; ++i) {
-    path.push(ethers.getBytes(fees[i]));
-    path.push(ethers.getBytes(tokens[i + 1]));
+    types.push(...["uint24", "address"]);
+    values.push(...[fees[i], tokens[i + 1]]);
   }
-  return ethers.concat(path);
+  return ethers.solidityPacked(types, values);
 }
 
 const iface = new ethers.Interface([
